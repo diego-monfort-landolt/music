@@ -6,7 +6,11 @@ Audio = content.querySelector(".main-song"),
 playBtn = content.querySelector('.play-pause'),
 playBtnIcon = content.querySelector('.play-pause span'),
 prevBtn = content.querySelector("#prev"),
-nextBtn = content.querySelector("#next");
+nextBtn = content.querySelector("#next"),
+progressBar = content.querySelector(".progress-bar"),
+progressDetails = content.querySelector(".progress-details"),
+repeatBtn = content.querySelector('#repeat'),
+Shuffle = content.querySelector("#shuffle");
 
 let index = 1;
 window.addEventListener("load", ()=>{
@@ -30,16 +34,19 @@ playBtn.addEventListener("click", ()=> {
         playSong();
     }
 });
+
 function playSong() {
     content.classList.add("paused");
     playBtnIcon.innerHTML = "pause";
     Audio.play();
 }
+
 function pauseSong() {
     content.classList.remove("paused");
     playBtnIcon.innerHTML = "play_arrow";
     Audio.pause();
 }
+
 nextBtn.addEventListener("click", () =>{
     nextSong();
 });
@@ -56,3 +63,77 @@ function nextSong() {
     loadData(index);
     playSong();
 }
+
+function prevSong() {
+    index--;
+    if(index <= 0) {
+        index = songs.length;
+    } else {
+        index = index;
+    }
+    loadData(index);
+    playSong();
+}
+
+Audio.addEventListener("timeupdate", (e)=>{
+   const initialTime = e.target.currentTime; //Get current music time
+   const finalTime = e.target.duration; //Get Music Duration..
+   let BarWidth = (initialTime / finalTime) * 100;
+   progressBar.style.width = BarWidth+ "%";
+
+
+   progressDetails.addEventListener("click", (e)=>{
+    let progressValue = progressDetails.clientWidth; //get width of progress Bar
+    let clickedOffsetX = e.offsetX; //get offset x value
+    let MusicDuration = Audio.duration; //get total music duration
+
+    Audio.currentTime = (clickedOffsetX / progressValue) * MusicDuration;
+
+   });
+
+   //Timer Logic
+   Audio.addEventListener("loadeddata", ()=>{
+    let finalTimeData = content.querySelector(".final");
+
+    //update finalDuration
+    let AudioDuration = Audio.duration;
+    let finalMinutes = Math.floor(AudioDuration / 60);
+    let finalSeconds = Math.floor(AudioDuration % 60);
+    if(finalSeconds < 10) {
+        finalSeconds = "0"+finalSeconds;
+    }
+    finalTimeData.innerText = finalMinutes+":"+finalSeconds;
+   });
+
+   //Update Current Duration
+   let currentTimeData = content.querySelector(".current");
+   let currentTime = Audio.currentTime;
+   let currentMinutes = Math.floor(currentTime / 60);
+   let currentSeconds = Math.floor(currentTime % 60);
+   if(currentSeconds < 10){
+    currentSeconds = "0"+currentSeconds;
+   }
+   currentTimeData.innerText = currentMinutes+":"+currentSeconds;
+
+   //repeat brn logic
+   repeatBtn.addEventListener("click", ()=>{
+    Audio.currentTime = 0;
+   })
+});
+
+//Shuffle Btn
+
+Shuffle.addEventListener("click", ()=>{
+    var randIndex = Math.floor(Math.random() * songs.length) + 1; // select random betwen 1 and song array length
+    loadData(randIndex);
+    playSong();
+});
+
+Audio.addEventListener("ended", ()=> {
+    index++;
+    if(index > songs.length){
+        index = 1;
+    }
+    loadData(index);
+    playSong();
+})
