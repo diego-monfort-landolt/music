@@ -12,7 +12,7 @@ progressDetails = content.querySelector(".progress-details"),
 repeatBtn = content.querySelector('#repeat'),
 Shuffle = content.querySelector("#shuffle");
 
-let index = 2;
+let index = 1;
 
 window.addEventListener("load", ()=>{
     loadData(index);
