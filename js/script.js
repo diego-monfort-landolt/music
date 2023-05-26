@@ -12,7 +12,7 @@ progressDetails = content.querySelector(".progress-details"),
 repeatBtn = content.querySelector('#repeat'),
 Shuffle = content.querySelector("#shuffle");
 
-let index = 1;
+let index = 2;
 
 window.addEventListener("load", ()=>{
     loadData(index);
@@ -23,7 +23,7 @@ function loadData(indexValue){
     musicName.innerHTML = songs[indexValue - 1].name;
     musicArtist.innerHTML = songs[indexValue - 1].name;
     Playimage.src = "./images/"+songs[indexValue - 1].img+".jpg";
-    Audio.src = "./music/"+songs[indexValue - 1].audio+".mp3";
+    Audio.src = "music/"+songs[indexValue - 1].audio+".mp3";
 }
 
 playBtn.addEventListener("click", ()=> {
